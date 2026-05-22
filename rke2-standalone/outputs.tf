@@ -9,14 +9,14 @@ output "k8s_vip" {
 output "init_master" {
   value = {
     hostname = local.master_hostnames[0]
-    uuid     = durantic_machine_config.masters[local.master_hostnames[0]].machine_uuid
-    mesh_ip  = durantic_machine_config.masters[local.master_hostnames[0]].wg_ip_address
+    uuid     = durantic_machine_deployment.masters[local.master_hostnames[0]].machine_uuid
+    mesh_ip  = durantic_machine_deployment.masters[local.master_hostnames[0]].wg_ip_address
   }
 }
 
 output "masters" {
   value = {
-    for hostname, machine in durantic_machine_config.masters : hostname => {
+    for hostname, machine in durantic_machine_deployment.masters : hostname => {
       uuid       = machine.machine_uuid
       mesh_ip    = machine.wg_ip_address
       public_ips = data.durantic_machine.masters[hostname].public_ip_addresses
@@ -26,15 +26,11 @@ output "masters" {
 
 output "workers" {
   value = {
-    for hostname, machine in durantic_machine_config.workers : hostname => {
+    for hostname, machine in durantic_machine_deployment.workers : hostname => {
       uuid    = machine.machine_uuid
       mesh_ip = machine.wg_ip_address
     }
   }
-}
-
-output "manual_provision_order" {
-  value = concat(local.master_hostnames, local.worker_hostnames)
 }
 
 output "roles" {

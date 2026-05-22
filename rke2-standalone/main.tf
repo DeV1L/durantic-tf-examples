@@ -13,7 +13,7 @@ provider "durantic" {
 }
 
 locals {
-  cluster_name = "rke2-standalone-dev01"
+  cluster_name = "rke2-standalone"
 
   master_hostnames = [
     "disposable-scaleway-01",
@@ -53,7 +53,7 @@ locals {
   server_template = <<-EOT
     #cloud-config
     #
-    # RKE2 standalone server role without ArgoCD.
+    # RKE2 standalone server role .
     # Masters are reachable directly through discovered public IPs.
     # The mesh-internal VIP provides HA for worker joins and internal API access.
 
@@ -152,23 +152,6 @@ locals {
   EOT
 }
 
-variable "k8s_cluster_token" {
-  description = "Shared RKE2 cluster join token. Generate one with: openssl rand -hex 32"
-  type        = string
-  sensitive   = true
-  default     = "bbe7cebcaca98b9ace03906a4989b018c461ddc584f96f82e59e862d4ce72e55"
-}
-
-variable "ssh_github_users" {
-  description = "GitHub usernames whose public SSH keys will be imported on every cluster machine."
-  type        = list(string)
-  default = [
-    "EvgeniyS-Planhat",
-    "ivand6c",
-    "vilorij",
-  ]
-}
-
 data "durantic_machine" "masters" {
   for_each = toset(local.master_hostnames)
 
@@ -257,7 +240,7 @@ resource "durantic_machine_role" "ssh_keys" {
   template_data  = local.ssh_keys_template
 }
 
-resource "durantic_machine_config" "masters" {
+resource "d" "masters" {
   for_each = data.durantic_machine.masters
 
   machine_uuid      = each.value.uuid
@@ -268,9 +251,12 @@ resource "durantic_machine_config" "masters" {
     each.key == local.master_hostnames[0] ? [durantic_machine_role.cluster_init.name] : [],
     [durantic_machine_role.server.name],
   )
+
+  # Bump to re-provision all masters (e.g. after a base image update)
+  force_provision = "v1"
 }
 
-resource "durantic_machine_config" "workers" {
+resource "durantic_machine_deployment" "workers" {
   for_each = data.durantic_machine.workers
 
   machine_uuid      = each.value.uuid
@@ -280,4 +266,7 @@ resource "durantic_machine_config" "workers" {
     durantic_machine_role.ssh_keys.name,
     durantic_machine_role.agent.name,
   ]
+
+  # Bump to re-provision all workers (e.g. after a base image update)
+  force_provision = "v1"
 }
