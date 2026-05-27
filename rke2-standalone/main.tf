@@ -240,8 +240,8 @@ resource "durantic_machine_role" "ssh_keys" {
   template_data  = local.ssh_keys_template
 }
 
-resource "d" "masters" {
-  for_each = data.durantic_machine.masters
+resource "durantic_machine_deployment" "masters" {
+  for_each = { for k, v in data.durantic_machine.masters : k => v if v.uuid != null }
 
   machine_uuid      = each.value.uuid
   mesh_network_uuid = durantic_mesh_network.cluster.uuid
