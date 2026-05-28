@@ -252,6 +252,11 @@ resource "durantic_machine_deployment" "masters" {
     [durantic_machine_role.server.name],
   )
 
+  depends_on = [
+    durantic_secret.k8s_cluster_token,
+    durantic_variable.k8s_vip,
+  ]
+
   # Bump to re-provision all masters (e.g. after a base image update)
   force_provision = "v1"
 }
@@ -265,6 +270,11 @@ resource "durantic_machine_deployment" "workers" {
   role_names = [
     durantic_machine_role.ssh_keys.name,
     durantic_machine_role.agent.name,
+  ]
+
+  depends_on = [
+    durantic_secret.k8s_cluster_token,
+    durantic_variable.k8s_vip,
   ]
 
   # Bump to re-provision all workers (e.g. after a base image update)
