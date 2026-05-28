@@ -29,7 +29,6 @@ locals {
   mesh_cidr = "10.60.0.0/24"
   k8s_vip   = "10.60.0.100"
 
-  k8s_vip_variable_name         = "RKE2_STANDALONE_DEV01_K8S_VIP"
   k8s_cluster_token_secret_name = "RKE2_STANDALONE_DEV01_K8S_CLUSTER_TOKEN"
 
   cluster_init_role_name = "rke2-standalone-dev01-cluster-init"
@@ -133,7 +132,7 @@ locals {
         owner: root:root
         permissions: '0600'
         content: |
-          SERVER_URL="{{ vars.${local.k8s_vip_variable_name} }}"
+          SERVER_URL="${durantic_vip.cluster.address}"
           TOKEN="{{ secrets.${local.k8s_cluster_token_secret_name} }}"
 
     runcmd:
@@ -195,12 +194,6 @@ resource "durantic_vip" "cluster" {
   health_check_unhealthy_threshold = 3
 }
 
-resource "durantic_variable" "k8s_vip" {
-  name        = local.k8s_vip_variable_name
-  value       = durantic_vip.cluster.address
-  description = "RKE2 standalone VIP used by workers as the :9345 join endpoint"
-}
-
 resource "durantic_secret" "k8s_cluster_token" {
   name        = local.k8s_cluster_token_secret_name
   value       = var.k8s_cluster_token
@@ -254,7 +247,6 @@ resource "durantic_machine_deployment" "masters" {
 
   depends_on = [
     durantic_secret.k8s_cluster_token,
-    durantic_variable.k8s_vip,
   ]
 
   # Bump to re-provision all masters (e.g. after a base image update)
@@ -274,7 +266,6 @@ resource "durantic_machine_deployment" "workers" {
 
   depends_on = [
     durantic_secret.k8s_cluster_token,
-    durantic_variable.k8s_vip,
   ]
 
   # Bump to re-provision all workers (e.g. after a base image update)

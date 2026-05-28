@@ -5,7 +5,7 @@ Creates an RKE2 standalone cluster on the five existing dev01 machines:
 - Masters: `disposable-scaleway-01`, `disposable-scaleway-02`
 - Workers: `disposable-scaleway-03`, `disposable-scaleway-04`, `disposable-scaleway-05`
 
-This example creates the Durantic mesh network, VIP, variable, secret, machine roles, SSH keys role, and machine role assignments from scratch. The VIP is assigned to the two master machines. It does not import role YAML from another repository, configure ArgoCD, or use the Cluster Wizard scenario API.
+This example creates the Durantic mesh network, VIP, secret, machine roles, SSH keys role, and machine role assignments from scratch. The VIP is assigned to the two master machines. It does not import role YAML from another repository, configure ArgoCD, or use the Cluster Wizard scenario API.
 
 ## Prerequisites
 
@@ -72,4 +72,4 @@ Provisioning is intentionally manual; this example only manages desired Durantic
 
 - No `GATEWAY_PUBLIC_IP` variable is created. The RKE2 server template will include each master's discovered public IPs in `tls-san`.
 - The mesh-internal VIP is assigned to the master machines. Workers join through it on port `9345`.
-- Role templates are defined directly in `main.tf` and use this example's account-owned role, variable, and secret names.
+- Role templates are defined directly in `main.tf` and use this example's account-owned role and secret names.
