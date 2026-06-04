@@ -1,0 +1,11 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+crash.log
+
+# Node
+node_modules/
+npm-debug.log*

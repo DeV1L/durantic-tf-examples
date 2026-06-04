@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-app-mongodb-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Durantic demo backend — renders a PDF with a random font and stores it in MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "pdfkit": "^0.15.0"
+  }
+}
