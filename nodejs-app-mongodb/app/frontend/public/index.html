@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Durantic Demo — PDF Generator</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.5;
+      }
+      h1 { margin-bottom: 0.25rem; }
+      .sub { color: #888; margin-top: 0; }
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 0.6rem;
+        font-size: 1rem;
+        box-sizing: border-box;
+      }
+      .row { display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0 1.5rem; }
+      button {
+        padding: 0.55rem 1.2rem;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 6px;
+        border: 1px solid #888;
+      }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+      .counter { color: #888; font-variant-numeric: tabular-nums; }
+      ul { list-style: none; padding: 0; }
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.2rem;
+        border-bottom: 1px solid #4444;
+      }
+      li .meta { color: #888; font-size: 0.85rem; }
+      a { color: #2a7ae2; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      #status { min-height: 1.2rem; color: #c0392b; }
+    </style>
+  </head>
+  <body>
+    <h1>Durantic Demo</h1>
+    <p class="sub">Type up to 400 characters, generate a PDF (random font), download it later. All visitors share the same documents.</p>
+
+    <textarea id="text" maxlength="400" placeholder="Write something..."></textarea>
+    <div class="row">
+      <button id="generate">Generate PDF</button>
+      <span class="counter"><span id="count">0</span>/400</span>
+    </div>
+    <div id="status"></div>
+
+    <h2>Documents</h2>
+    <ul id="docs"><li><span class="meta">loading...</span></li></ul>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const text = $("text");
+      const count = $("count");
+      const status = $("status");
+      const generate = $("generate");
+      const docs = $("docs");
+
+      text.addEventListener("input", () => (count.textContent = text.value.length));
+
+      function fmt(ts) {
+        try { return new Date(ts).toLocaleString(); } catch { return ts; }
+      }
+
+      async function refresh() {
+        try {
+          const res = await fetch("/api/documents");
+          const list = await res.json();
+          if (!Array.isArray(list) || list.length === 0) {
+            docs.innerHTML = '<li><span class="meta">No documents yet.</span></li>';
+            return;
+          }
+          docs.innerHTML = list
+            .map(
+              (d) =>
+                `<li><a href="/api/documents/${d.id}">${d.filename}</a>` +
+                `<span class="meta">${d.font} · ${fmt(d.createdAt)}</span></li>`
+            )
+            .join("");
+        } catch (e) {
+          docs.innerHTML = '<li><span class="meta">Failed to load documents.</span></li>';
+        }
+      }
+
+      generate.addEventListener("click", async () => {
+        const value = text.value.trim();
+        status.textContent = "";
+        if (!value) { status.textContent = "Please enter some text."; return; }
+        generate.disabled = true;
+        try {
+          const res = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: value }),
+          });
+          const body = await res.json();
+          if (!res.ok) throw new Error(body.error || "request failed");
+          text.value = "";
+          count.textContent = "0";
+          await refresh();
+        } catch (e) {
+          status.textContent = e.message;
+        } finally {
+          generate.disabled = false;
+        }
+      });
+
+      refresh();
+    </script>
+  </body>
+</html>

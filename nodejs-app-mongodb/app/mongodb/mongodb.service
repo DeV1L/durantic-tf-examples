@@ -1,0 +1,13 @@
+[Unit]
+Description=Durantic demo MongoDB (official mongo:7 container)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/mongodb-bootstrap.sh
+
+[Install]
+WantedBy=multi-user.target

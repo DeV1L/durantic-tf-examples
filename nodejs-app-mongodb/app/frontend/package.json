@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-app-mongodb-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Durantic demo frontend — serves the UI and proxies /api to the backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^3.0.0"
+  }
+}
