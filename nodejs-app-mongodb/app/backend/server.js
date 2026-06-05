@@ -125,7 +125,9 @@ app.get("/api/documents/:id", async (req, res) => {
       return res.status(404).json({ error: "not found" });
     }
     res.setHeader("Content-Type", doc.contentType || "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="${doc.filename}"`);
+    // inline → the browser renders the PDF in its viewer (open in a new tab) instead of
+    // forcing a download (which Chrome also blocks as "insecure" over plain HTTP).
+    res.setHeader("Content-Disposition", `inline; filename="${doc.filename}"`);
     res.send(doc.data.buffer ? Buffer.from(doc.data.buffer) : Buffer.from(doc.data));
   } catch (err) {
     console.error("download failed:", err);

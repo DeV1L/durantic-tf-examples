@@ -85,7 +85,7 @@
           docs.innerHTML = list
             .map(
               (d) =>
-                `<li><a href="/api/documents/${d.id}">${d.filename}</a>` +
+                `<li><a href="/api/documents/${d.id}" target="_blank" rel="noopener">${d.filename}</a>` +
                 `<span class="meta">${d.font} · ${fmt(d.createdAt)}</span></li>`
             )
             .join("");

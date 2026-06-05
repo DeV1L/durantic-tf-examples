@@ -36,11 +36,11 @@ locals {
     %{endfor~}
   EOT
 
-  # MongoDB tier: writes credentials + mesh bind address, then starts the mongo container.
+  # MongoDB tier: writes credentials + mesh bind address, then starts native mongod.
   mongodb_template = <<-EOT
     #cloud-config
     #
-    # MongoDB role. Runs the official mongo:7 container bound to the mesh interface.
+    # MongoDB role. Configures and starts native mongod, bound to the mesh interface.
 
     write_files:
       - path: /etc/durantic/mongodb.env
@@ -51,8 +51,7 @@ locals {
           MESH_IP="{{ machine.mesh.ip }}"
 
     runcmd:
-      - systemctl daemon-reload
-      - systemctl enable --now mongodb
+      - /usr/local/bin/mongodb-bootstrap.sh
   EOT
 
   # Backend tier: connects to MongoDB directly over the mesh. The mongo machine's mesh IP
@@ -200,8 +199,8 @@ resource "durantic_machine_deployment" "mongodb" {
     durantic_secret.mongodb_password,
   ]
 
-  # Bump to re-provision (e.g. after a base image update)
-  force_provision = "v1"
+  # Bumped to v2 to re-provision with the native mongod image (was docker-based)
+  force_provision = "v2"
 }
 
 resource "durantic_machine_deployment" "backend" {

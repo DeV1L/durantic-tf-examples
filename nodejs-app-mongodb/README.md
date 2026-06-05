@@ -72,7 +72,7 @@ the `peers` context (the peer carrying the `...-mongodb` role).
   | Role | Merge priority | Image | Notes |
   |------|---------------|-------|-------|
   | `...-ssh-keys` | 20 | — | Imports GitHub SSH keys on every machine |
-  | `...-mongodb` | 100 | `:mongodb` | `requires_mesh`; writes `/etc/durantic/mongodb.env`, starts mongo container bound to its mesh IP |
+  | `...-mongodb` | 100 | `:mongodb` | `requires_mesh`; writes `/etc/durantic/mongodb.env`, starts native `mongod` bound to its mesh IP |
   | `...-backend` | 100 | `:backend` | `requires_mesh`, bound to backend VIP; writes `/etc/durantic/backend.env` with `MONGODB_URL` → mongo peer mesh IP (discovered via `peers`) |
   | `...-frontend` | 100 | `:frontend` | `requires_mesh`; writes `/etc/durantic/frontend.env` with `BACKEND_URL` → backend VIP |
 - **Machine deployments** — one per tier, each carrying `ssh-keys` + its tier role, mesh
@@ -90,11 +90,13 @@ boot (`/etc/durantic/<tier>.env`) and `runcmd` starts the service.
 |-------|-----------|----------|
 | `app/frontend/Dockerfile` | base + Node.js 20 | Express server + `public/index.html`, `frontend.service` |
 | `app/backend/Dockerfile` | base + Node.js 20 | Express + `mongodb` + `pdfkit`, `backend.service` |
-| `app/mongodb/Dockerfile` | base + `docker.io` | runs the official `mongo:7` container, `mongodb.service` |
+| `app/mongodb/Dockerfile` | base + `mongodb-org` | native `mongod`, configured + started by `mongodb-bootstrap.sh` |
 
-> MongoDB runs as the official `mongo:7` container (via `docker.io` baked into the image)
-> rather than a native package — a deliberate simplification that keeps the demo reliable
-> on Ubuntu 25.10. The other two tiers run Node natively.
+> MongoDB is installed natively (`mongodb-org` 8.0). Ubuntu 25.10 ("questing") has no MongoDB
+> apt packages, so the image uses MongoDB's **noble** (24.04 LTS) repo, which is ABI-compatible
+> with the 25.10 base. At boot, `mongodb-bootstrap.sh` writes `/etc/mongod.conf` (bound to
+> localhost + the mesh IP, auth enabled), starts `mongod`, and creates the root user via the
+> localhost exception.
 
 ### Build & push the boot images
 
@@ -126,7 +128,7 @@ A quick sanity check of the app itself:
 ```bash
 # 1. MongoDB
 docker run -d --name demo-mongo -p 27017:27017 \
-  -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=testpw mongo:7
+  -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=testpw mongo:8
 
 # 2. Backend
 cd app/backend && npm install
@@ -225,6 +227,6 @@ Open the `app_url` output (the frontend's public IP) in a browser, type some tex
 - The single backend VIP is intentional (it demonstrates the `durantic_vip` resource), not HA.
   Because a Durantic VIP is a floating address local to the holding machine, a service must
   bind to all interfaces (`0.0.0.0`) to be reachable on it — the frontend and backend Node
-  servers do; the mongo container deliberately binds only its mesh IP, which is why MongoDB
-  is reached directly rather than through a VIP.
-- Reuses the `ssh-keys` role and the `force_provision = "v1"` bump idiom from `rke2-standalone`.
+  servers do. `mongod` binds localhost + its own mesh IP (not a VIP), and the backend reaches
+  it directly on that mesh IP.
+- Reuses the `ssh-keys` role and the `force_provision` bump idiom from `rke2-standalone`.
