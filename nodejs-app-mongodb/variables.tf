@@ -1,19 +1,19 @@
 variable "frontend_hostname" {
   description = "Hostname of the existing Durantic machine to run the frontend (Worker) tier."
   type        = string
-  default     = "CHANGE-ME-frontend"
+  default     = "worker"
 }
 
 variable "backend_hostname" {
   description = "Hostname of the existing Durantic machine to run the backend (Render) tier."
   type        = string
-  default     = "CHANGE-ME-backend"
+  default     = "render"
 }
 
 variable "mongodb_hostname" {
   description = "Hostname of the existing Durantic machine to run the MongoDB tier."
   type        = string
-  default     = "CHANGE-ME-mongodb"
+  default     = "mongo"
 }
 
 variable "mongodb_password" {

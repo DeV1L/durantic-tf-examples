@@ -9,15 +9,14 @@ terraform {
 
 provider "durantic" {
   # api_token read from DURANTIC_API_TOKEN
-  # endpoint read from DURANTIC_ENDPOINT, for example https://api.dev01.durantic.dev
+  # endpoint read from DURANTIC_ENDPOINT, for example https://api.demo.durantic.dev
 }
 
 locals {
-  app_name = "nodejs-app-mongodb"
+  app_name = "demo"
 
   mesh_cidr   = "10.61.0.0/24"
   backend_vip = "10.61.0.100" # VIP "Render" — the backend
-  mongodb_vip = "10.61.0.101" # VIP "MongoDB"
 
   mongodb_password_secret_name = "NODEJS_APP_MONGODB_PASSWORD"
 
@@ -56,18 +55,27 @@ locals {
       - systemctl enable --now mongodb
   EOT
 
-  # Backend tier: connects to MongoDB through the MongoDB VIP over the mesh.
+  # Backend tier: connects to MongoDB directly over the mesh. The mongo machine's mesh IP
+  # isn't known at plan time, so we discover it from the peers context (the peer carrying
+  # the mongodb role), the same way the rke2 example discovers server peers.
   backend_template = <<-EOT
     #cloud-config
     #
-    # Backend role. Renders PDFs and stores them in MongoDB (reached via the MongoDB VIP).
+    # Backend role. Renders PDFs and stores them in MongoDB (reached over the mesh).
+
+    {% set ns = namespace(mongo_ip='') %}
+    {% for peer in peers %}
+    {% if '${local.mongodb_role_name}' in peer.roles %}
+    {% set ns.mongo_ip = peer.mesh.ip %}
+    {% endif %}
+    {% endfor %}
 
     write_files:
       - path: /etc/durantic/backend.env
         owner: root:root
         permissions: '0600'
         content: |
-          MONGODB_URL="mongodb://root:{{ secrets.${local.mongodb_password_secret_name} }}@${local.mongodb_vip}:27017/?authSource=admin"
+          MONGODB_URL="mongodb://root:{{ secrets.${local.mongodb_password_secret_name} }}@{{ ns.mongo_ip }}:27017/?authSource=admin"
           PORT="3000"
 
     runcmd:
@@ -138,21 +146,6 @@ resource "durantic_vip" "backend" {
   health_check_unhealthy_threshold = 3
 }
 
-resource "durantic_vip" "mongodb" {
-  name    = "${local.app_name}-mongodb-vip"
-  address = local.mongodb_vip
-  enabled = true
-
-  machine_uuids = [data.durantic_machine.mongodb.uuid]
-
-  health_check_type                = "tcp"
-  health_check_target              = ":27017"
-  health_check_interval_seconds    = 5
-  health_check_timeout_seconds     = 3
-  health_check_healthy_threshold   = 2
-  health_check_unhealthy_threshold = 3
-}
-
 resource "durantic_secret" "mongodb_password" {
   name        = local.mongodb_password_secret_name
   value       = var.mongodb_password
@@ -172,7 +165,6 @@ resource "durantic_machine_role" "mongodb" {
   image_uuid     = data.durantic_image.mongodb.uuid
   merge_priority = 100
   requires_mesh  = true
-  vip_uuid       = durantic_vip.mongodb.uuid
   template_data  = local.mongodb_template
 }
 
@@ -225,7 +217,8 @@ resource "durantic_machine_deployment" "backend" {
     durantic_secret.mongodb_password,
   ]
 
-  force_provision = "v1"
+  # Bumped to v2 to re-provision the backend with the VIP-free MongoDB config
+  force_provision = "v2"
 }
 
 resource "durantic_machine_deployment" "frontend" {

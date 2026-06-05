@@ -14,10 +14,6 @@ output "backend_vip" {
   value = durantic_vip.backend.address
 }
 
-output "mongodb_vip" {
-  value = durantic_vip.mongodb.address
-}
-
 output "frontend" {
   value = {
     hostname   = var.frontend_hostname

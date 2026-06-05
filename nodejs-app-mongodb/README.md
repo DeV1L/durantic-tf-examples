@@ -6,15 +6,16 @@
 > semantics. Use it as a reference, not a starting point you deploy as-is.
 
 Deploys a simple **frontend + backend + MongoDB** demo over a Durantic mesh network with
-two VirtualIPs:
+one VirtualIP:
 
 - **Frontend** (the *Worker*) — the only public-facing tier. Serves a one-page UI and
   reverse-proxies `/api` to the backend over the mesh.
 - **Backend** (the *Render* tier) — generates a PDF from user text (random font) and stores
   it in MongoDB. Reached through the **backend VIP** (`10.61.0.100`).
-- **MongoDB** — stores the PDFs. Reached through the **MongoDB VIP** (`10.61.0.101`).
+- **MongoDB** — stores the PDFs. Reached directly on its **mesh IP** (discovered by the
+  backend from the mesh peers).
 
-This example creates the Durantic mesh network, two VIPs, a secret, machine roles, and
+This example creates the Durantic mesh network, a VIP, a secret, machine roles, and
 machine deployments from scratch. It does not import role YAML from another repo, configure
 ArgoCD, or use the Cluster Wizard scenario API. Both the **app code** and the **Terraform**
 live in this folder.
@@ -29,8 +30,8 @@ documents and can upload/download simultaneously.
 | Tier | Endpoint(s) | Talks to |
 |------|-------------|----------|
 | Frontend (`app/frontend`) | `:80` UI, proxies `/api/*` | backend VIP `:3000` |
-| Backend (`app/backend`) | `POST /api/generate`, `GET /api/documents`, `GET /api/documents/:id`, `GET /healthz` | MongoDB VIP `:27017` |
-| MongoDB (`app/mongodb`) | `:27017` | — |
+| Backend (`app/backend`) | `POST /api/generate`, `GET /api/documents`, `GET /api/documents/:id`, `GET /healthz` | MongoDB mesh IP `:27017` |
+| MongoDB (`app/mongodb`) | `:27017` (mesh IP) | — |
 
 ## Architecture
 
@@ -46,33 +47,33 @@ documents and can upload/download simultaneously.
    VIP Render (10.61.0.100)  ──►  ┌──────────┐
                                   │ Backend  │  Render — PDF generator
                                   └────┬─────┘
-                                       │  mesh
+                                       │  mesh (mongo peer mesh IP)
                                        ▼
-                            VIP MongoDB (10.61.0.101) ──► ┌──────────┐
-                                                          │ MongoDB  │
-                                                          └──────────┘
+                                  ┌──────────┐
+                                  │ MongoDB  │  :27017 on its mesh IP
+                                  └──────────┘
 ```
 
-Functional traffic path: **User → Frontend(:80) → VIP Render(:3000) → Backend → VIP MongoDB(:27017) → MongoDB.**
-Both VIPs live inside the Durantic mesh and are reachable mesh-wide; in this demo the
-backend is the only client of the MongoDB VIP. The VIPs each back a single machine — they
-exist here to showcase the `durantic_vip` resource, not for HA.
+Functional traffic path: **User → Frontend(:80) → VIP Render(:3000) → Backend → MongoDB(:27017, mesh IP).**
+The backend VIP lives inside the Durantic mesh and is reachable mesh-wide; it backs a single
+machine here to showcase the `durantic_vip` resource, not for HA. The backend reaches
+MongoDB directly on the mongo machine's mesh IP, which it discovers at provision time from
+the `peers` context (the peer carrying the `...-mongodb` role).
 
 ## What it creates
 
 - **Mesh network** `nodejs-app-mongodb-mesh` — CIDR `10.61.0.0/24`, route reflector disabled.
-- **VIPs**:
+- **VIP**:
   | VIP | Address | Backs | Health check |
   |-----|---------|-------|--------------|
   | `...-backend-vip` (Render) | `10.61.0.100` | backend machine | TCP `:3000` |
-  | `...-mongodb-vip` | `10.61.0.101` | mongodb machine | TCP `:27017` |
 - **Secret** `NODEJS_APP_MONGODB_PASSWORD` — the MongoDB root password (from `var.mongodb_password`).
 - **Machine roles** (templates inline in `main.tf`):
   | Role | Merge priority | Image | Notes |
   |------|---------------|-------|-------|
   | `...-ssh-keys` | 20 | — | Imports GitHub SSH keys on every machine |
-  | `...-mongodb` | 100 | `:mongodb` | `requires_mesh`, bound to MongoDB VIP; writes `/etc/durantic/mongodb.env`, starts mongo container |
-  | `...-backend` | 100 | `:backend` | `requires_mesh`, bound to backend VIP; writes `/etc/durantic/backend.env` with `MONGODB_URL` → MongoDB VIP |
+  | `...-mongodb` | 100 | `:mongodb` | `requires_mesh`; writes `/etc/durantic/mongodb.env`, starts mongo container bound to its mesh IP |
+  | `...-backend` | 100 | `:backend` | `requires_mesh`, bound to backend VIP; writes `/etc/durantic/backend.env` with `MONGODB_URL` → mongo peer mesh IP (discovered via `peers`) |
   | `...-frontend` | 100 | `:frontend` | `requires_mesh`; writes `/etc/durantic/frontend.env` with `BACKEND_URL` → backend VIP |
 - **Machine deployments** — one per tier, each carrying `ssh-keys` + its tier role, mesh
   membership, and `force_provision = "v1"` (bump to force re-provisioning).
@@ -169,7 +170,7 @@ export DURANTIC_API_TOKEN="..."
 ## Variables
 
 - `frontend_hostname`, `backend_hostname`, `mongodb_hostname` — hostnames of three existing
-  Durantic machines (one per tier). Defaults are `CHANGE-ME-*` placeholders; set your own:
+  Durantic machines (one per tier). Defaults are `demo-*` placeholders; set your own:
   ```bash
   export TF_VAR_frontend_hostname="my-frontend-host"
   export TF_VAR_backend_hostname="my-backend-host"
@@ -211,14 +212,19 @@ Open the `app_url` output (the frontend's public IP) in a browser, type some tex
 `outputs.tf` exposes:
 
 - `app_url` — open this in a browser (frontend's first discovered public IP).
-- `backend_vip` / `mongodb_vip` — the two VIP addresses.
+- `backend_vip` — the backend VIP address.
 - `frontend` / `backend` / `mongodb` — per-tier hostname, UUID, mesh IP, public IPs.
 - `roles` — name and UUID of each created machine role.
 
 ## Notes
 
-- The backend reaches MongoDB through the MongoDB VIP address, which is interpolated into the
-  backend role template at plan time (`${local.mongodb_vip}`) — the same static-VIP technique
-  the `rke2-standalone` example uses for the API server join address.
-- Single-machine VIPs are intentional (they demonstrate the `durantic_vip` resource), not HA.
+- The backend reaches MongoDB directly on the mongo machine's mesh IP, discovered at provision
+  time from the `peers` context (the peer carrying the `...-mongodb` role) — the same
+  peer-discovery technique the `rke2-standalone` example uses to find server nodes. The mesh
+  IP isn't known at plan time, so it can't be a static Terraform value.
+- The single backend VIP is intentional (it demonstrates the `durantic_vip` resource), not HA.
+  Because a Durantic VIP is a floating address local to the holding machine, a service must
+  bind to all interfaces (`0.0.0.0`) to be reachable on it — the frontend and backend Node
+  servers do; the mongo container deliberately binds only its mesh IP, which is why MongoDB
+  is reached directly rather than through a VIP.
 - Reuses the `ssh-keys` role and the `force_provision = "v1"` bump idiom from `rke2-standalone`.
