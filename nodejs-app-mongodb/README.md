@@ -165,7 +165,7 @@ provider_installation {
 Export credentials:
 
 ```bash
-export DURANTIC_ENDPOINT="https://api.dev01.durantic.dev"
+export DURANTIC_ENDPOINT="https://api.demo.durantic.dev"
 export DURANTIC_API_TOKEN="..."
 ```
 

@@ -199,8 +199,8 @@ resource "durantic_machine_deployment" "mongodb" {
     durantic_secret.mongodb_password,
   ]
 
-  # Bumped to v2 to re-provision with the native mongod image (was docker-based)
-  force_provision = "v2"
+  # Bumped to v1 to re-provision with the native mongod image (was docker-based)
+  force_provision = "v1"
 }
 
 resource "durantic_machine_deployment" "backend" {
@@ -216,8 +216,8 @@ resource "durantic_machine_deployment" "backend" {
     durantic_secret.mongodb_password,
   ]
 
-  # Bumped to v2 to re-provision the backend with the VIP-free MongoDB config
-  force_provision = "v2"
+  # Bumped to v1 to re-provision the backend with the VIP-free MongoDB config
+  force_provision = "v1"
 }
 
 resource "durantic_machine_deployment" "frontend" {
