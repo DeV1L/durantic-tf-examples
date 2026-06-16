@@ -21,15 +21,20 @@ write_files:
     permissions: '0600'
     content: |
       node-ip: "{{ machine.mesh.ip }}"
-      bind-address: "{{ machine.mesh.ip }}"
       advertise-address: "{{ machine.mesh.ip }}"
+      bind-address: "0.0.0.0"
       flannel-iface: "durantic-wg"
       write-kubeconfig-mode: "0644"
       # local-path PVCs live on the mounted data disk so they survive a re-provision.
       default-local-storage-path: "/mnt/data/local-path"
+      # The agent already discovers the node's IPs (incl. the public one); the
+      # controlplane renders them here, so no runtime IP-detection script is needed.
       tls-san:
         - "{{ machine.mesh.ip }}"
         - "{{ machine.hostname }}"
+{% for ip in machine.discovered_ip_addresses | default([]) %}
+        - "{{ ip }}"
+{% endfor %}
       token: "{{ secrets.K3S_STANDALONE_ARGOCD_CLUSTER_TOKEN }}"
 
   - path: /etc/rancher/k3s/registries.yaml
@@ -52,6 +57,5 @@ write_files:
 
 runcmd:
   - /usr/local/bin/mount-data-disk.sh
-  - /usr/local/bin/k3s-public-api.sh
   - systemctl enable --now k3s
   - /usr/local/bin/argocd-app-bootstrap.sh

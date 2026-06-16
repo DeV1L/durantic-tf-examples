@@ -38,7 +38,7 @@ RUN apt-get update && \
 COPY argocd.yaml /var/lib/rancher/k3s/server/manifests/argocd.yaml
 
 # Bootstrap scripts (read the config the role writes at boot).
-COPY k3s-public-api.sh argocd-app-bootstrap.sh mount-data-disk.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/k3s-public-api.sh /usr/local/bin/argocd-app-bootstrap.sh /usr/local/bin/mount-data-disk.sh
+COPY argocd-app-bootstrap.sh mount-data-disk.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/argocd-app-bootstrap.sh /usr/local/bin/mount-data-disk.sh
 
 CMD ["/bin/bash"]

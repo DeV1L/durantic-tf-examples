@@ -119,5 +119,5 @@ resource "durantic_machine_deployment" "node" {
   ]
 
   # Bump to force a re-provision without a config change.
-  force_provision = "v4"
+  force_provision = "v5"
 }
