@@ -25,6 +25,8 @@ write_files:
       advertise-address: "{{ machine.mesh.ip }}"
       flannel-iface: "durantic-wg"
       write-kubeconfig-mode: "0644"
+      # local-path PVCs live on the mounted data disk so they survive a re-provision.
+      default-local-storage-path: "/mnt/data/local-path"
       tls-san:
         - "{{ machine.mesh.ip }}"
         - "{{ machine.hostname }}"
@@ -49,6 +51,7 @@ write_files:
       ARGOCD_APP_PATH="{{ vars.K3S_STANDALONE_ARGOCD_APP_PATH }}"
 
 runcmd:
+  - /usr/local/bin/mount-data-disk.sh
   - /usr/local/bin/k3s-public-api.sh
   - systemctl enable --now k3s
   - /usr/local/bin/argocd-app-bootstrap.sh

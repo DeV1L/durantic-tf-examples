@@ -22,8 +22,12 @@ LABEL durantic.image.version="1.0" \
       durantic.architecture="x86_64"
 
 # Bake the k3s binary + systemd unit (offline). SKIP_START/SKIP_ENABLE so the install
-# only lays down files; the role's cloud-init starts it at boot.
-RUN curl -sfL https://get.k3s.io | \
+# only lays down files; the role's cloud-init starts it at boot. e2fsprogs provides
+# mkfs.ext4 for formatting the data disk on first boot.
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y e2fsprogs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    curl -sfL https://get.k3s.io | \
       INSTALL_K3S_VERSION="${K3S_VERSION}" \
       INSTALL_K3S_SKIP_START=true \
       INSTALL_K3S_SKIP_ENABLE=true \
@@ -34,7 +38,7 @@ RUN curl -sfL https://get.k3s.io | \
 COPY argocd.yaml /var/lib/rancher/k3s/server/manifests/argocd.yaml
 
 # Bootstrap scripts (read the config the role writes at boot).
-COPY k3s-public-api.sh argocd-app-bootstrap.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/k3s-public-api.sh /usr/local/bin/argocd-app-bootstrap.sh
+COPY k3s-public-api.sh argocd-app-bootstrap.sh mount-data-disk.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/k3s-public-api.sh /usr/local/bin/argocd-app-bootstrap.sh /usr/local/bin/mount-data-disk.sh
 
 CMD ["/bin/bash"]

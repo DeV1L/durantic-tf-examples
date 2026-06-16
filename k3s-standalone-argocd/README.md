@@ -25,6 +25,12 @@ Architecture diagram: [`k3s-standalone-argocd.drawio`](k3s-standalone-argocd.dra
   (`K3S_STANDALONE_ARGOCD_*`) — it never reuses anything already in the account.
 - The node's own public IP serves both the app (Traefik ingress, `:80`) and the ArgoCD UI
   (NodePort, `:30080`). The k8s API is published on the public IP automatically.
+- **Persistent data on the node's second disk.** The role mounts the secondary
+  (`data`) disk at `/mnt/data` (`mount-data-disk.sh`, baked) — formatting it *only* if
+  it has no filesystem yet, so data is preserved. MongoDB uses a **static PV pinned to
+  `/mnt/data/mongodb`**. Durantic reimages only the *system* disk on a re-provision, so
+  **MongoDB data survives re-provisions** (verified: a document created before a
+  re-provision is still present after).
 
 ArgoCD deploys from **`github.com/DeV1L/argocd-example-apps`**, branch `irrisketch-demo`,
 path `nodejs-app-mongodb/apps` (app-of-apps) → `nodejs-app-mongodb/manifests` (frontend,
