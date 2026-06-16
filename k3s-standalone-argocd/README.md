@@ -36,16 +36,29 @@ backend, `mongo:8.0`).
   `k3s-argocd-demo`).
 - The two app images pushed to `ghcr.io/dev1l/argocd-example-nodejs-app-mongodb`
   (`:frontend`, `:backend`) — see the app repo's README.
-- The **baked boot image built + registered** (one-time):
+
+### 1. Build + push the baked boot image (one-time)
 
 ```bash
-export DURANTIC_ENDPOINT="https://api.demo.durantic.dev"
-export DURANTIC_API_TOKEN="dur_..."
-export GHCR_TOKEN="ghp_..."                  # ghcr.io PAT, write:packages on dev1l
-DOCKER=docker.exe ./image/build-and-register.sh   # builds, pushes private, registers cred + image
+echo "$GHCR_TOKEN" | docker login ghcr.io -u dev1l --password-stdin   # PAT, write:packages
+tar -czh -C image . | docker build --provenance=false -t ghcr.io/dev1l/durantic-k3s-argocd:latest -
+docker push ghcr.io/dev1l/durantic-k3s-argocd:latest
 ```
 
-- Provider credentials for `terraform`:
+(On WSL with Docker Desktop, use `docker.exe` in place of `docker`.)
+
+### 2. Register the credential + image in the Dashboard (one-time)
+
+In the Durantic Dashboard:
+
+1. **Registry credentials** → add `ghcr.io` with username `dev1l` and your ghcr.io PAT
+   (so the controlplane can pull the private boot image).
+2. **Images** → add `ghcr.io/dev1l/durantic-k3s-argocd:latest`, name it
+   `durantic-k3s-argocd:latest`, and attach the credential above.
+
+Terraform looks this image up by name via `data.durantic_image`.
+
+### 3. Provider credentials for `terraform`
 
 ```bash
 export DURANTIC_ENDPOINT="https://api.demo.durantic.dev"
@@ -92,7 +105,6 @@ ssh root@<node-public-ip> \
 | File | Purpose |
 |------|---------|
 | `image/Dockerfile` + scripts | the baked boot image (k3s + ArgoCD manifest + bootstrap scripts) |
-| `image/build-and-register.sh` | build + push (private) + register the boot image |
 | `main.tf` | provider, mesh, secrets/variables, roles, deployment |
 | `variables.tf` | node hostname, SSH users, ArgoCD repo/branch/path, tokens |
 | `outputs.tf` | app/ArgoCD URLs, node info, provision status |
