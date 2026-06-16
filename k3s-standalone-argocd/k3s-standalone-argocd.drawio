@@ -1,236 +1,228 @@
-<mxfile host="app.diagrams.net" type="device">
-  <diagram id="k3s-standalone-argocd" name="k3s-standalone-argocd">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="900" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <mxCell id="title" value="k3s-standalone-argocd : single-node k3s + ArgoCD (no gateway)" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="0" width="800" height="30" as="geometry" />
-        </mxCell>
-
-        <!-- ===== external sources (top) ===== -->
-        <mxCell id="ghRepo" value="GitHub : DeV1L/argocd-example-apps&#10;branch irrisketch-demo&#10;nodejs-app-mongodb/apps (app-of-apps)&#10;-&gt; manifests + argocd-extras" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="40" y="50" width="360" height="94" as="geometry" />
-        </mxCell>
-        <mxCell id="ghcrBoot" value="ghcr.io/dev1l/durantic-k3s-argocd (private)&#10;baked boot image:&#10;k3s + ArgoCD HelmChart + scripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="600" y="50" width="320" height="94" as="geometry" />
-        </mxCell>
-        <mxCell id="ghcrApp" value="ghcr.io/dev1l/&#10;argocd-example-nodejs-app-mongodb&#10;:frontend  :backend  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="960" y="50" width="320" height="94" as="geometry" />
-        </mxCell>
-
-        <!-- ===== provisioning column (left) ===== -->
-        <mxCell id="tf" value="Terraform  (durantic provider)&#10;durantic-tf-examples/k3s-standalone-argocd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="40" y="230" width="360" height="64" as="geometry" />
-        </mxCell>
-        <mxCell id="cp" value="Durantic Controlplane  (api.demo.durantic.dev)&#10;&#10;creates: mesh 10.62.0.0/24, k3s + ghcr secrets,&#10;ArgoCD repo/branch/path vars,&#10;registry credential, machine role, deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="40" y="350" width="360" height="150" as="geometry" />
-        </mxCell>
-        <mxCell id="imgbuild" value="build boot image (manual)&#10;docker build (FROM linux-ubuntu-25.10)&#10;-&gt; docker push (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="40" y="560" width="360" height="84" as="geometry" />
-        </mxCell>
-
-        <!-- ===== the node (zone) ===== -->
-        <mxCell id="zNode" value="k3s-argocd-demo  .  51.15.249.37  .  single-node k3s (boots the baked image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
-          <mxGeometry x="580" y="220" width="720" height="570" as="geometry" />
-        </mxCell>
-        <mxCell id="ci" value="cloud-init (config only)&#10;writes k3s config + registries.yaml + argocd.env, starts k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="610" y="278" width="330" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="k3s" value="k3s + Traefik  (baked into the image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="610" y="370" width="330" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="argocdNs" value="namespace: argocd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="610" y="448" width="330" height="140" as="geometry" />
-        </mxCell>
-        <mxCell id="argocd" value="ArgoCD&#10;argocd-server -&gt; NodePort :30080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="630" y="492" width="290" height="72" as="geometry" />
-        </mxCell>
-        <mxCell id="ingress" value="Ingress (Traefik)  :80 -&gt; frontend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="610" y="630" width="330" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="appNs" value="namespace: nodejs-app-mongodb" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="980" y="360" width="300" height="400" as="geometry" />
-        </mxCell>
-        <mxCell id="fe" value="frontend (Deployment)&#10;UI + /api reverse proxy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="408" width="260" height="58" as="geometry" />
-        </mxCell>
-        <mxCell id="be" value="backend (Deployment)&#10;PDF generator :3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="506" width="260" height="58" as="geometry" />
-        </mxCell>
-        <mxCell id="mongo" value="mongodb (Deployment)&#10;static PV -&gt; /mnt/data (data disk) :27017" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="604" width="260" height="70" as="geometry" />
-        </mxCell>
-
-        <mxCell id="user" value="User / Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="700" y="820" width="180" height="52" as="geometry" />
-        </mxCell>
-
-        <!-- ===== edges: build / provision ===== -->
-        <mxCell id="e_tf_cp" value="terraform apply" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tf" target="cp">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_build_reg" value="register image + cred (Dashboard)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imgbuild" target="cp">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_build_push" value="build + push (private)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imgbuild" target="ghcrBoot">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="480" y="585" />
-              <mxPoint x="480" y="170" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_cp_node" value="provision" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cp" target="ci">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="545" y="425" />
-              <mxPoint x="545" y="306" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_bootpull" value="pull boot image (cred)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ghcrBoot" target="ci">
-          <mxGeometry x="-0.5" relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ===== edges: runtime ===== -->
-        <mxCell id="e_ci_k3s" value="starts" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ci" target="k3s">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_k3s_argo" value="auto-deploys ArgoCD" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k3s" target="argocd">
-          <mxGeometry x="-0.4" relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_argo_repo" value="syncs app-of-apps" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="argocd" target="ghRepo">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="450" y="521" />
-              <mxPoint x="450" y="97" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_argo_app" value="deploys" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.45;entryDx=0;entryDy=0;" edge="1" parent="1" source="argocd" target="appNs">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_apppull" value="pull app images (registries.yaml)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ghcrApp" target="appNs">
-          <mxGeometry x="-0.5" relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_fe_be" value="/api -&gt; :3000" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fe" target="be">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_be_mongo" value=":27017" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="be" target="mongo">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_ing_fe" value="" style="endArrow=block;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ingress" target="fe">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="650" />
-              <mxPoint x="960" y="437" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- ===== edges: user access (green) ===== -->
-        <mxCell id="e_user_ing" value=":80  (app)" style="endArrow=block;html=1;rounded=0;fontSize=11;strokeColor=#82b366;strokeWidth=2;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.4;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="user" target="ingress">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e_user_argo" value=":30080  (ArgoCD UI)" style="endArrow=block;html=1;rounded=0;fontSize=11;strokeColor=#82b366;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="user" target="argocd">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="846" />
-              <mxPoint x="960" y="528" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-
-  <diagram id="update-app-version" name="Update app version">
-    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="760" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <mxCell id="a_title" value="Update an app version  (GitOps flow)" style="text;html=1;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="700" height="30" as="geometry" />
-        </mxCell>
-
-        <mxCell id="a_dev" value="1. Developer edits the app code&#10;nodejs-app-mongodb/src/{frontend | backend}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="70" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="a_build" value="2. docker build + push a NEW tag&#10;ghcr.io/dev1l/argocd-example-nodejs-app-mongodb:frontend-v2  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="166" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="a_git" value="3. Bump the image tag in nodejs-app-mongodb/manifests/*.yaml&#10;git commit + push  (branch irrisketch-demo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="262" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="a_argo" value="4. ArgoCD (auto-sync + self-heal)&#10;detects the git change and syncs the Application" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="358" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="a_roll" value="5. k3s rolling update of the Deployment&#10;containerd pulls the new image  (registries.yaml)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="454" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="a_done" value="6. App updated  (rolling, no downtime)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="550" width="470" height="46" as="geometry" />
-        </mxCell>
-
-        <mxCell id="a_note" value="GitOps: change the image TAG and commit the manifest change — ArgoCD syncs from git.&#10;&#10;Rebuilding the same :frontend tag alone won't trigger a sync (no git change)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="640" y="166" width="380" height="152" as="geometry" />
-        </mxCell>
-
-        <mxCell id="a_e1" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_dev" target="a_build"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="a_e2" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_build" target="a_git"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="a_e3" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_git" target="a_argo"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="a_e4" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_argo" target="a_roll"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="a_e5" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_roll" target="a_done"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-
-  <diagram id="update-k3s-server" name="Update k3s server">
-    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="820" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-
-        <mxCell id="k_title" value="Update the k3s version  (single node: rebuild the boot image + re-provision)" style="text;html=1;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="800" height="30" as="geometry" />
-        </mxCell>
-
-        <mxCell id="k_bump" value="1. Bump K3S_VERSION in image/Dockerfile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="70" width="470" height="46" as="geometry" />
-        </mxCell>
-        <mxCell id="k_build" value="2. docker build + push the new boot image&#10;ghcr.io/dev1l/durantic-k3s-argocd  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="156" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="k_reg" value="3. Update the image in the Dashboard&#10;(new tag, or re-pull the :latest tag)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="252" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="k_stop" value="4. Re-provision reimages the SYSTEM disk only&#10;the data disk (/mnt/data -&gt; MongoDB) is preserved" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="348" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="k_apply" value="5. terraform apply  (bump force_provision)&#10;the node reboots into the new baked image -&gt; fresh k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="444" width="470" height="56" as="geometry" />
-        </mxCell>
-        <mxCell id="k_redeploy" value="6. ArgoCD re-deploys the app from git  (app-of-apps)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="540" width="470" height="46" as="geometry" />
-        </mxCell>
-        <mxCell id="k_verify" value="7. Verify  app :80  +  ArgoCD UI :30080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="120" y="626" width="470" height="46" as="geometry" />
-        </mxCell>
-
-        <mxCell id="k_note" value="Single-node cluster: there is no in-place / rolling k8s upgrade — updating k3s = a new boot image + a full re-provision.&#10;&#10;Re-provision reimages only the SYSTEM disk. MongoDB data lives on the second (data) disk at /mnt/data and is preserved across the rebuild." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="640" y="156" width="380" height="152" as="geometry" />
-        </mxCell>
-
-        <mxCell id="k_e1" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_bump" target="k_build"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="k_e2" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_build" target="k_reg"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="k_e3" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_reg" target="k_stop"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="k_e4" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_stop" target="k_apply"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="k_e5" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_apply" target="k_redeploy"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="k_e6" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="k_redeploy" target="k_verify"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram id="k3s-standalone-argocd" name="k3s-standalone-argocd">
+        <mxGraphModel dx="570" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="k3s-standalone-argocd : single-node k3s + ArgoCD (no gateway)" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" width="800" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="ghRepo" value="GitHub : DeV1L/argocd-example-apps&#xa;branch irrisketch-demo&#xa;nodejs-app-mongodb/apps (app-of-apps)&#xa;-&gt; manifests + argocd-extras" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="50" width="360" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="ghcrBoot" value="ghcr.io/dev1l/durantic-k3s-argocd (private)&#xa;baked boot image:&#xa;k3s + ArgoCD HelmChart + scripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="50" width="320" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="ghcrApp" value="ghcr.io/dev1l/&#xa;argocd-example-nodejs-app-mongodb&#xa;:frontend  :backend  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="50" width="320" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="tf" value="Terraform  (durantic provider)&#xa;durantic-tf-examples/k3s-standalone-argocd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="230" width="360" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="cp" value="Durantic Controlplane  (api.demo.durantic.dev)&#xa;&#xa;creates: mesh 10.62.0.0/24, k3s + ghcr secrets,&#xa;ArgoCD repo/branch/path vars,&#xa;registry credential, machine role, deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="350" width="360" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="imgbuild" value="build boot image (manual)&#xa;docker build (FROM linux-ubuntu-25.10)&#xa;-&gt; docker push (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="360" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="zNode" value="k3s-argocd-demo  .  51.15.249.37  .  single-node k3s (boots the baked image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="220" width="720" height="570" as="geometry"/>
+                </mxCell>
+                <mxCell id="ci" value="cloud-init (config only)&#xa;writes k3s config + registries.yaml + argocd.env, starts k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="278" width="330" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="k3s" value="k3s + Traefik  (baked into the image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="370" width="330" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="argocdNs" value="namespace: argocd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="448" width="330" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="argocd" value="ArgoCD&#xa;argocd-server -&gt; NodePort :30080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="492" width="290" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="ingress" value="Ingress (Traefik)  :80 -&gt; frontend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="630" width="330" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="appNs" value="namespace: nodejs-app-mongodb" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="360" width="300" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe" value="frontend (Deployment)&#xa;UI + /api reverse proxy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="408" width="260" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="be" value="backend (Deployment)&#xa;PDF generator :3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="506" width="260" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="mongo" value="mongodb (Deployment)&#xa;static PV -&gt; /mnt/data (data disk) :27017" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="604" width="260" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="user" value="User / Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="820" width="180" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_tf_cp" value="terraform apply" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tf" target="cp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_build_reg" value="register image + cred (Dashboard)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="imgbuild" target="cp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_build_push" value="build + push (private)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" parent="1" source="imgbuild" target="ghcrBoot" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="480" y="585"/>
+                            <mxPoint x="480" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_cp_node" value="provision" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cp" target="ci" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="545" y="425"/>
+                            <mxPoint x="545" y="306"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_bootpull" value="pull boot image (cred)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrBoot" target="ci" edge="1">
+                    <mxGeometry x="-0.5" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_ci_k3s" value="starts" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ci" target="k3s" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_k3s_argo" value="auto-deploys ArgoCD" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k3s" target="argocd" edge="1">
+                    <mxGeometry x="-0.4" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_argo_repo" value="syncs app-of-apps" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="argocd" target="ghRepo" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="450" y="521"/>
+                            <mxPoint x="450" y="97"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_argo_app" value="deploys" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.45;entryDx=0;entryDy=0;" parent="1" source="argocd" target="appNs" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_apppull" value="pull app images (registries.yaml)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrApp" target="appNs" edge="1">
+                    <mxGeometry x="-0.5" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_fe_be" value="/api -&gt; :3000" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="fe" target="be" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_be_mongo" value=":27017" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="be" target="mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_ing_fe" value="" style="endArrow=block;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ingress" target="fe" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="960" y="650"/>
+                            <mxPoint x="960" y="437"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_user_ing" value=":80  (app)" style="endArrow=block;html=1;rounded=0;fontSize=11;strokeColor=#82b366;strokeWidth=2;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.4;entryY=1;entryDx=0;entryDy=0;" parent="1" source="user" target="ingress" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_user_argo" value=":30080  (ArgoCD UI)" style="endArrow=block;html=1;rounded=0;fontSize=11;strokeColor=#82b366;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="user" target="argocd" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="960" y="846"/>
+                            <mxPoint x="960" y="528"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="update-app-version" name="Update app version">
+        <mxGraphModel dx="570" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="760" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="a_title" value="Update an app version  (GitOps flow)" style="text;html=1;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="700" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_dev" value="1. Developer edits the app code&#xa;nodejs-app-mongodb/src/{frontend | backend}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="70" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_build" value="2. docker build + push a NEW tag&#xa;ghcr.io/dev1l/argocd-example-nodejs-app-mongodb:frontend-v2  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="166" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_git" value="3. Bump the image tag in nodejs-app-mongodb/manifests/*.yaml&#xa;git commit + push  (branch irrisketch-demo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="262" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_argo" value="4. ArgoCD (auto-sync + self-heal)&#xa;detects the git change and syncs the Application" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="358" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_roll" value="5. k3s rolling update of the Deployment&#xa;containerd pulls the new image  (registries.yaml)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="454" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_done" value="6. App updated  (rolling, no downtime)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="550" width="470" height="46" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_e1" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="a_dev" target="a_build" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_e2" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="a_build" target="a_git" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_e3" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="a_git" target="a_argo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_e4" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="a_argo" target="a_roll" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a_e5" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="a_roll" target="a_done" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="update-k3s-server" name="Update k3s server">
+        <mxGraphModel dx="570" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="820" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="k_title" value="Update the k3s version  (single node: rebuild the boot image + re-provision)" style="text;html=1;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="800" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_bump" value="1. Bump K3S_VERSION in image/Dockerfile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="70" width="470" height="46" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_build" value="2. docker build + push the new boot image&#xa;ghcr.io/dev1l/durantic-k3s-argocd  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="156" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_reg" value="3. Update the image in the Dashboard&#xa;(new tag, or re-pull the :latest tag)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="252" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_stop" value="4. Re-provision reimages the SYSTEM disk only&#xa;the data disk (/mnt/data -&gt; MongoDB) is preserved" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="348" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_apply" value="5. terraform apply  (bump force_provision)&#xa;the node reboots into the new baked image -&gt; fresh k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="444" width="470" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_redeploy" value="6. ArgoCD re-deploys the app from git  (app-of-apps)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="540" width="470" height="46" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_verify" value="7. Verify  app :80  +  ArgoCD UI :30080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="626" width="470" height="46" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e1" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_bump" target="k_build" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e2" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_build" target="k_reg" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e3" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_reg" target="k_stop" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e4" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_stop" target="k_apply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e5" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_apply" target="k_redeploy" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="k_e6" value="" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k_redeploy" target="k_verify" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>

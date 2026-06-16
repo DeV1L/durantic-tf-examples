@@ -8,8 +8,11 @@ It is the Kubernetes counterpart of [`nodejs-app-mongodb`](../nodejs-app-mongodb
 runs the same app directly on three bare-metal machines): here the app runs as Kubernetes
 workloads, delivered by ArgoCD.
 
-Architecture diagram: [`k3s-standalone-argocd.drawio`](k3s-standalone-argocd.drawio)
-(open with [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension).
+![Architecture](images/architecture.png)
+
+Diagram source: [`k3s-standalone-argocd.drawio`](k3s-standalone-argocd.drawio) (3 pages —
+open with [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension). The
+PNGs in [`images/`](images) are exported from it (see *Regenerating the diagram images*).
 
 ## What it builds
 
@@ -111,3 +114,34 @@ ssh root@<node-public-ip> \
 | `variables.tf` | node hostname, SSH users, ArgoCD repo/branch/path, tokens |
 | `outputs.tf` | app/ArgoCD URLs, node info, provision status |
 | `templates/k3s-argocd.cloud-init.yaml` | **config-only** cloud-init: writes k3s config + registries.yaml + argocd.env, starts k3s |
+| `images/` | PNGs exported from the `.drawio` (architecture + day-2 flows) |
+
+## Day-2 operations
+
+**Update an app version** (GitOps — no re-provision):
+
+![Update an app version](images/update-app-version.png)
+
+**Update the k3s version** (rebuild the boot image + re-provision; MongoDB data on the
+data disk is preserved):
+
+![Update the k3s server](images/update-k3s-server.png)
+
+## Regenerating the diagram images
+
+The PNGs are exported from `k3s-standalone-argocd.drawio` with the **drawio CLI**
+(drawio-desktop in headless `--export` mode). Pick one:
+
+- **Docker (no install):**
+  ```bash
+  docker run --rm -v "$PWD:/data" rlespinasse/drawio-desktop-headless \
+    --no-sandbox -x -f png -s 1 -b 10 -o /data/images/architecture.png /data/k3s-standalone-argocd.drawio
+  ```
+  Repeat per page (the `--page-index` flag is unreliable in this image — split the file
+  into single-page `.drawio`s, or use a real install below).
+- **Windows (Draw.io Desktop):** `winget install jgraph.draw`, then
+  `& "draw.io.exe" -x -f png -p 0 -o images/architecture.png k3s-standalone-argocd.drawio`.
+- **Linux/WSL (Draw.io Desktop .deb):** download from
+  [jgraph/drawio-desktop releases](https://github.com/jgraph/drawio-desktop/releases),
+  `sudo apt install ./drawio-amd64-<ver>.deb`, then
+  `xvfb-run -a drawio -x -f png -p 0 -o images/architecture.png k3s-standalone-argocd.drawio`.
