@@ -27,7 +27,7 @@ variable "argocd_target_revision" {
 variable "argocd_app_path" {
   description = "Path in the repo containing the app-of-apps Applications."
   type        = string
-  default     = "apps"
+  default     = "nodejs-app-mongodb/apps"
 }
 
 variable "k3s_cluster_token" {

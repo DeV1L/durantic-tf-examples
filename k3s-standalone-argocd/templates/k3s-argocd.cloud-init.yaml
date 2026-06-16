@@ -2,10 +2,10 @@
 #
 # Single-node k3s + ArgoCD — standalone, NO gateway.
 #
-# Modeled on the official `k3s-server` role: boot the plain Ubuntu base image and install
-# k3s at runtime (no special baked image). k3s then auto-deploys ArgoCD from the bundled
-# HelmChart manifest, and argocd-app-bootstrap.sh creates the app-of-apps Application that
-# points ArgoCD at this account's repo variables.
+# k3s (binary + systemd unit), the ArgoCD HelmChart auto-deploy manifest, and the
+# bootstrap scripts (k3s-public-api.sh, argocd-app-bootstrap.sh) are all BAKED into
+# the boot image (ghcr.io/dev1l/durantic-k3s-argocd; see ../image/). This role only
+# writes config and starts k3s — it installs no binaries at runtime.
 #
 # Required secrets:
 #   K3S_STANDALONE_ARGOCD_CLUSTER_TOKEN   k3s server token
@@ -40,89 +40,15 @@ write_files:
             username: "dev1l"
             password: "{{ secrets.K3S_STANDALONE_ARGOCD_GHCR_TOKEN }}"
 
-  - path: /var/lib/rancher/k3s/server/manifests/argocd.yaml
+  - path: /etc/durantic/argocd.env
     owner: root:root
     permissions: '0600'
     content: |
-      apiVersion: helm.cattle.io/v1
-      kind: HelmChart
-      metadata:
-        name: argo-cd
-        namespace: kube-system
-      spec:
-        repo: https://argoproj.github.io/argo-helm
-        chart: argo-cd
-        version: "9.5.21"
-        targetNamespace: argocd
-        createNamespace: true
-        valuesContent: |-
-          dex:
-            enabled: false
-          notifications:
-            enabled: false
-          applicationSet:
-            enabled: false
-          configs:
-            params:
-              server.insecure: true
-
-  - path: /usr/local/bin/k3s-public-api.sh
-    owner: root:root
-    permissions: '0755'
-    content: |
-      #!/bin/bash
-      # Auto-detect public IPs and enable public k3s API access.
-      CONFIG="/etc/rancher/k3s/config.yaml"
-      PUBLIC_IPS=$(ip -4 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 | grep -v -E '^(10[.]|172[.](1[6-9]|2[0-9]|3[01])[.]|192[.]168[.])' || true)
-      if [ -z "$PUBLIC_IPS" ]; then
-        echo "No public IPs detected - API bound to mesh only"
-        exit 0
-      fi
-      sed -i 's/^bind-address: .*/bind-address: "0.0.0.0"/' "$CONFIG"
-      for ip in $PUBLIC_IPS; do
-        grep -q "$ip" "$CONFIG" || sed -i "/^tls-san:/a\\  - \"$ip\"" "$CONFIG"
-      done
-      echo "Public API enabled for: $PUBLIC_IPS"
-
-  - path: /usr/local/bin/argocd-app-bootstrap.sh
-    owner: root:root
-    permissions: '0755'
-    content: |
-      #!/bin/bash
-      # Wait for ArgoCD to come up, then create the app-of-apps Application.
-      set -euo pipefail
-      echo "Waiting for ArgoCD CRDs..."
-      for i in $(seq 1 60); do
-        k3s kubectl get crd applications.argoproj.io >/dev/null 2>&1 && break
-        [ "$i" = "60" ] && { echo "ERROR: ArgoCD CRDs not ready after 10m"; exit 1; }
-        sleep 10
-      done
-      k3s kubectl -n argocd rollout status deploy/argocd-server --timeout=300s || true
-      echo "Creating app-of-apps Application..."
-      k3s kubectl apply -f - <<APP
-      apiVersion: argoproj.io/v1alpha1
-      kind: Application
-      metadata:
-        name: app-of-apps
-        namespace: argocd
-      spec:
-        project: default
-        source:
-          repoURL: "{{ vars.K3S_STANDALONE_ARGOCD_REPO_URL }}"
-          targetRevision: "{{ vars.K3S_STANDALONE_ARGOCD_TARGET_REVISION }}"
-          path: "{{ vars.K3S_STANDALONE_ARGOCD_APP_PATH }}"
-        destination:
-          server: https://kubernetes.default.svc
-          namespace: argocd
-        syncPolicy:
-          automated:
-            prune: true
-            selfHeal: true
-      APP
-      echo "ArgoCD app-of-apps created."
+      ARGOCD_REPO_URL="{{ vars.K3S_STANDALONE_ARGOCD_REPO_URL }}"
+      ARGOCD_TARGET_REVISION="{{ vars.K3S_STANDALONE_ARGOCD_TARGET_REVISION }}"
+      ARGOCD_APP_PATH="{{ vars.K3S_STANDALONE_ARGOCD_APP_PATH }}"
 
 runcmd:
-  - command -v curl >/dev/null 2>&1 || (apt-get update && apt-get install -y curl)
   - /usr/local/bin/k3s-public-api.sh
-  - curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -
+  - systemctl enable --now k3s
   - /usr/local/bin/argocd-app-bootstrap.sh

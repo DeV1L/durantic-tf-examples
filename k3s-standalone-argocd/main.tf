@@ -36,11 +36,12 @@ data "durantic_machine" "node" {
   hostname = var.node_hostname
 }
 
-# Plain Ubuntu base image. k3s + ArgoCD are installed at runtime by the role's cloud-init
-# (no special baked image, no gateway). Looked up by name because two images share the
-# :latest docker_image_url; "linux-ubuntu-25.10:latest" is the official one.
-data "durantic_image" "base" {
-  name = "linux-ubuntu-25.10:latest"
+# Baked single-node k3s + ArgoCD boot image (built from ../image, FROM the official
+# Ubuntu base). k3s + the ArgoCD HelmChart manifest + bootstrap scripts are baked in,
+# so the role's cloud-init only writes config and starts k3s. Private image on
+# ghcr.io/dev1l — registered in the account with a registry credential (see ../image).
+data "durantic_image" "k3s" {
+  name = "durantic-k3s-argocd:latest"
 }
 
 resource "durantic_mesh_network" "cluster" {
@@ -93,7 +94,7 @@ resource "durantic_machine_role" "ssh_keys" {
 resource "durantic_machine_role" "k3s_argocd" {
   name           = local.k3s_role_name
   description    = "Single-node k3s + ArgoCD (standalone, no gateway) for ${local.cluster_name}"
-  image_uuid     = data.durantic_image.base.uuid
+  image_uuid     = data.durantic_image.k3s.uuid
   merge_priority = 100
   requires_mesh  = true
   template_data  = file("${path.module}/templates/k3s-argocd.cloud-init.yaml")
@@ -118,5 +119,5 @@ resource "durantic_machine_deployment" "node" {
   ]
 
   # Bump to force a re-provision without a config change.
-  force_provision = "v1"
+  force_provision = "v2"
 }
