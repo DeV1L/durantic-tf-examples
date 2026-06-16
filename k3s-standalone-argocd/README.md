@@ -16,21 +16,19 @@ Architecture diagram: [`k3s-standalone-argocd.drawio`](k3s-standalone-argocd.dra
 - A **baked boot image** ([`image/`](image)) `FROM ghcr.io/durantic/linux-ubuntu-25.10:latest`
   with **k3s + the ArgoCD HelmChart manifest + bootstrap scripts baked in** — pushed
   **private** to `ghcr.io/dev1l/durantic-k3s-argocd` and registered in the account with a
-  registry credential. No gateway.
+  registry credential.
 - A custom `durantic_machine_role` whose cloud-init is **config-only** — it writes
-  `k3s config.yaml` + `registries.yaml` + `argocd.env` and starts k3s; it installs no
-  binaries at runtime. k3s auto-deploys ArgoCD from the baked HelmChart, then the baked
+  `k3s config.yaml` + `registries.yaml` + `argocd.env` and starts k3s. k3s auto-deploys ArgoCD from the baked HelmChart, then the baked
   `argocd-app-bootstrap.sh` creates the **app-of-apps** `Application`.
 - A fresh mesh network (`10.62.0.0/24`) and uniquely-named secrets/variables
-  (`K3S_STANDALONE_ARGOCD_*`) — it never reuses anything already in the account.
+  (`K3S_STANDALONE_ARGOCD_*`).
 - The node's own public IP serves both the app (Traefik ingress, `:80`) and the ArgoCD UI
   (NodePort, `:30080`). The k8s API is published on the public IP automatically.
 - **Persistent data on the node's second disk.** The role mounts the secondary
   (`data`) disk at `/mnt/data` (`mount-data-disk.sh`, baked) — formatting it *only* if
   it has no filesystem yet, so data is preserved. MongoDB uses a **static PV pinned to
   `/mnt/data/mongodb`**. Durantic reimages only the *system* disk on a re-provision, so
-  **MongoDB data survives re-provisions** (verified: a document created before a
-  re-provision is still present after).
+  **MongoDB data survives re-provisions**.
 
 ArgoCD deploys from **`github.com/DeV1L/argocd-example-apps`**, branch `irrisketch-demo`,
 path `nodejs-app-mongodb/apps` (app-of-apps) → `nodejs-app-mongodb/manifests` (frontend,
@@ -50,8 +48,6 @@ echo "$GHCR_TOKEN" | docker login ghcr.io -u dev1l --password-stdin   # PAT, wri
 tar -czh -C image . | docker build --provenance=false -t ghcr.io/dev1l/durantic-k3s-argocd:latest -
 docker push ghcr.io/dev1l/durantic-k3s-argocd:latest
 ```
-
-(On WSL with Docker Desktop, use `docker.exe` in place of `docker`.)
 
 ### 2. Register the credential + image in the Dashboard (one-time)
 
@@ -82,7 +78,7 @@ terraform apply
 ```
 
 `apply` re-provisions the node — it reboots into the **baked** image, then cloud-init just
-writes config and starts k3s (no installs). Provisioning the OS completes within the apply;
+writes config and starts k3s. Provisioning the OS completes within the apply;
 k3s/ArgoCD/app come up shortly after.
 
 ## Verify
