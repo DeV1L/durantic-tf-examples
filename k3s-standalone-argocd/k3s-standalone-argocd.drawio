@@ -27,7 +27,7 @@
         <mxCell id="cp" value="Durantic Controlplane  (api.demo.durantic.dev)&#10;&#10;creates: mesh 10.62.0.0/24, k3s + ghcr secrets,&#10;ArgoCD repo/branch/path vars,&#10;registry credential, machine role, deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="40" y="350" width="360" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="imgbuild" value="image/build-and-register.sh&#10;docker build (FROM linux-ubuntu-25.10)&#10;-&gt; push private -&gt; register image + cred" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="imgbuild" value="build boot image (manual)&#10;docker build (FROM linux-ubuntu-25.10)&#10;-&gt; docker push (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="40" y="560" width="360" height="84" as="geometry" />
         </mxCell>
 
@@ -71,7 +71,7 @@
         <mxCell id="e_tf_cp" value="terraform apply" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tf" target="cp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_build_reg" value="register image + cred (API)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imgbuild" target="cp">
+        <mxCell id="e_build_reg" value="register image + cred (Dashboard)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imgbuild" target="cp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e_build_push" value="build + push (private)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imgbuild" target="ghcrBoot">
