@@ -8,6 +8,9 @@ It is the Kubernetes counterpart of [`nodejs-app-mongodb`](../nodejs-app-mongodb
 runs the same app directly on three bare-metal machines): here the app runs as Kubernetes
 workloads, delivered by ArgoCD.
 
+Architecture diagram: [`k3s-standalone-argocd.drawio`](k3s-standalone-argocd.drawio)
+(open with [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension).
+
 ## What it builds
 
 - A **baked boot image** ([`image/`](image)) `FROM ghcr.io/durantic/linux-ubuntu-25.10:latest`
