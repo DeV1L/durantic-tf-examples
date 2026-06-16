@@ -12,7 +12,7 @@ workloads, delivered by ArgoCD.
 
 Diagram source: [`assets/k3s-standalone-argocd.drawio`](assets/k3s-standalone-argocd.drawio) (3 pages —
 open with [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension). The
-PNGs in [`assets/`](assets) are exported from it (see *Regenerating the diagram images*).
+PNGs in [`assets/`](assets) are exported from it.
 
 ## What it builds
 
@@ -126,22 +126,3 @@ ssh root@<node-public-ip> \
 data disk is preserved):
 
 ![Update the k3s server](assets/update-k3s-server.png)
-
-## Regenerating the diagram images
-
-The PNGs are exported from `assets/k3s-standalone-argocd.drawio` with the **drawio CLI**
-(drawio-desktop in headless `--export` mode). Pick one:
-
-- **Docker (no install):**
-  ```bash
-  docker run --rm -v "$PWD:/data" rlespinasse/drawio-desktop-headless \
-    --no-sandbox -x -f png -s 1 -b 10 -o /data/assets/architecture.png /data/assets/k3s-standalone-argocd.drawio
-  ```
-  Repeat per page (the `--page-index` flag is unreliable in this image — split the file
-  into single-page `.drawio`s, or use a real install below).
-- **Windows (Draw.io Desktop):** `winget install jgraph.draw`, then
-  `& "draw.io.exe" -x -f png -p 0 -o assets/architecture.png assets/k3s-standalone-argocd.drawio`.
-- **Linux/WSL (Draw.io Desktop .deb):** download from
-  [jgraph/drawio-desktop releases](https://github.com/jgraph/drawio-desktop/releases),
-  `sudo apt install ./drawio-amd64-<ver>.deb`, then
-  `xvfb-run -a drawio -x -f png -p 0 -o assets/architecture.png assets/k3s-standalone-argocd.drawio`.
