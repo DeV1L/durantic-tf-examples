@@ -13,7 +13,7 @@
                 <mxCell id="ghcrBoot" value="&lt;b&gt;Container Registry&lt;/b&gt;&lt;br&gt;- Machine boot image&lt;br&gt;- App images" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="600" y="50" width="680" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="tf" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Terraform IaC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="tf" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Terraform + Boot image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="230" width="360" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="cp" value="&lt;b&gt;Durantic Controlplane&lt;br&gt;&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
@@ -127,6 +127,25 @@
                 </mxCell>
                 <mxCell id="manualNote" value="Manual steps:&lt;br&gt;build + push the boot image; register image + credential (Dashboard); trigger re-provision (Dashboard)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontStyle=2;" parent="1" vertex="1">
                     <mxGeometry x="40" y="680" width="360" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="ghApps" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Apps)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="158" width="360" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_apps_reg" value="build + push (app images)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" parent="1" source="ghApps" target="ghcrBoot" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="520" y="187"/>
+                            <mxPoint x="520" y="116"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_tf_img" value="boot image (Dockerfile)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="tf" target="imgbuild" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="415" y="262"/>
+                            <mxPoint x="415" y="602"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>
