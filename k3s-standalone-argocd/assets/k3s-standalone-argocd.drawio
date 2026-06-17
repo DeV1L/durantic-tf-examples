@@ -7,8 +7,8 @@
                 <mxCell id="title" value="k3s-standalone-argocd : single-node k3s + ArgoCD (no gateway)" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="40" width="800" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghRepo" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(ArgoCD specs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="50" width="360" height="94" as="geometry"/>
+                <mxCell id="ghRepo" value="&lt;b&gt;Git&lt;/b&gt;&lt;br&gt;- App source&lt;br&gt;- ArgoCD specs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="50" width="360" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="ghcrBoot" value="&lt;b&gt;Container Registry&lt;/b&gt;&lt;br&gt;- Machine boot image&lt;br&gt;- App images" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="600" y="50" width="680" height="94" as="geometry"/>
@@ -86,11 +86,11 @@
                 <mxCell id="e_k3s_argo" value="auto-deploys ArgoCD" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" parent="1" source="k3s" target="argocd" edge="1">
                     <mxGeometry x="-0.4" relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e_argo_repo" value="syncs app-of-apps" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="argocd" target="ghRepo" edge="1">
+                <mxCell id="e_argo_repo" value="syncs app-of-apps" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="argocd" target="ghRepo" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="450" y="521"/>
-                            <mxPoint x="450" y="97"/>
+                            <mxPoint x="450" y="140"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
@@ -128,14 +128,11 @@
                 <mxCell id="manualNote" value="Manual steps:&lt;br&gt;build + push the boot image; register image + credential (Dashboard); trigger re-provision (Dashboard)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontStyle=2;" parent="1" vertex="1">
                     <mxGeometry x="40" y="680" width="360" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghApps" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Apps)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="158" width="360" height="58" as="geometry"/>
-                </mxCell>
-                <mxCell id="e_apps_reg" value="build + push (app images)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" parent="1" source="ghApps" target="ghcrBoot" edge="1">
+                <mxCell id="e_apps_reg" value="build + push (app images)" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ghRepo" target="ghcrBoot" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="520" y="187"/>
-                            <mxPoint x="520" y="116"/>
+                            <mxPoint x="520" y="80"/>
+                            <mxPoint x="520" y="97"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
