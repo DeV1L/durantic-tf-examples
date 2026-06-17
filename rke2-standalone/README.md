@@ -33,7 +33,7 @@ This example creates the Durantic mesh network, VIP, secret, machine roles, and 
 Build and install the local provider first:
 
 ```bash
-cd /home/ubuntu/git/durantic/terraform-provider
+cd /home/ubuntu/git/durantic/terraform-provider-durantic
 make install
 ```
 

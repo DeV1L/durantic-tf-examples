@@ -146,7 +146,7 @@ BACKEND_URL="http://127.0.0.1:3000" PORT=8080 node server.js
 Build and install the local provider first:
 
 ```bash
-cd /home/ubuntu/git/durantic/terraform-provider
+cd /home/ubuntu/git/durantic/terraform-provider-durantic
 make install
 ```
 
