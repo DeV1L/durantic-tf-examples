@@ -7,16 +7,16 @@
                 <mxCell id="title" value="k3s-standalone-argocd : single-node k3s + ArgoCD (no gateway)" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="40" width="800" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghRepo" value="GitHub : DeV1L/argocd-example-apps&#xa;branch irrisketch-demo&#xa;nodejs-app-mongodb/apps (app-of-apps)&#xa;-&gt; manifests + argocd-extras" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="ghRepo" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(ArgoCD specs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="50" width="360" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghcrBoot" value="ghcr.io/dev1l/durantic-k3s-argocd (private)&#xa;baked boot image:&#xa;k3s + ArgoCD HelmChart + scripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="ghcrBoot" value="&lt;b&gt;Registry&lt;/b&gt;&#xa;(Machine boot image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="600" y="50" width="320" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghcrApp" value="ghcr.io/dev1l/&#xa;argocd-example-nodejs-app-mongodb&#xa;:frontend  :backend  (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="ghcrApp" value="&lt;b&gt;Registry&lt;/b&gt;&#xa;(App images)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="960" y="50" width="320" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="tf" value="Terraform  (durantic provider)&#xa;durantic-tf-examples/k3s-standalone-argocd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="tf" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Terraform IaC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="230" width="360" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="cp" value="&lt;b&gt;Durantic Controlplane&lt;br&gt;&lt;/b&gt;&lt;br&gt;creates resources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
@@ -25,7 +25,7 @@
                 <mxCell id="imgbuild" value="build boot image (manual)&#xa;docker build (FROM linux-ubuntu-25.10)&#xa;-&gt; docker push (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="560" width="360" height="84" as="geometry"/>
                 </mxCell>
-                <mxCell id="zNode" value="k3s-argocd-demo  .  51.15.249.37  .  single-node k3s (boots the baked image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" parent="1" vertex="1">
+                <mxCell id="zNode" value="k3s-argocd-demo  .  single-node k3s (boots the baked image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" parent="1" vertex="1">
                     <mxGeometry x="580" y="220" width="720" height="570" as="geometry"/>
                 </mxCell>
                 <mxCell id="ci" value="cloud-init (config only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
@@ -128,6 +128,9 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
+                <mxCell id="manualNote" value="Several steps are manual:&#xa;build + push the boot image; register image + credential (Dashboard); trigger re-provision (Dashboard)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="680" width="360" height="80" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
@@ -189,13 +192,13 @@
                 <mxCell id="k_build" value="2. docker build + push the new boot image" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
                     <mxGeometry x="120" y="156" width="470" height="56" as="geometry"/>
                 </mxCell>
-                <mxCell id="k_reg" value="3. Update the image in the Dashboard&#xa;(new tag, or re-pull the :latest tag)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                <mxCell id="k_reg" value="3. Image updated by Terraform&#xa;(or use the :latest tag)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
                     <mxGeometry x="120" y="252" width="470" height="56" as="geometry"/>
                 </mxCell>
                 <mxCell id="k_stop" value="4. Re-provision reimages the SYSTEM disk only&#xa;the data disk (/mnt/data -&gt; MongoDB) is preserved" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
                     <mxGeometry x="120" y="348" width="470" height="56" as="geometry"/>
                 </mxCell>
-                <mxCell id="k_apply" value="5. terraform apply  (bump force_provision)&#xa;the node reboots into the new baked image -&gt; fresh k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
+                <mxCell id="k_apply" value="5. Re-provision from the Dashboard&#xa;-&gt; node reboots into the new baked image -&gt; fresh k3s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
                     <mxGeometry x="120" y="444" width="470" height="56" as="geometry"/>
                 </mxCell>
                 <mxCell id="k_redeploy" value="6. ArgoCD re-deploys the app from git  (app-of-apps)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=middle;spacingLeft=10;" parent="1" vertex="1">
