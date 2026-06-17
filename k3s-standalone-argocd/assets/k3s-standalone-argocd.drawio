@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="k3s-standalone-argocd" name="k3s-standalone-argocd">
-        <mxGraphModel dx="794" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="900" math="0" shadow="0">
+        <mxGraphModel dx="691" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="900" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -10,22 +10,19 @@
                 <mxCell id="ghRepo" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(ArgoCD specs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="50" width="360" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="ghcrBoot" value="&lt;b&gt;Registry&lt;/b&gt;&#xa;(Machine boot image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
-                    <mxGeometry x="600" y="50" width="320" height="94" as="geometry"/>
-                </mxCell>
-                <mxCell id="ghcrApp" value="&lt;b&gt;Registry&lt;/b&gt;&#xa;(App images)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
-                    <mxGeometry x="960" y="50" width="320" height="94" as="geometry"/>
+                <mxCell id="ghcrBoot" value="&lt;b&gt;Container Registry&lt;/b&gt;&lt;br&gt;- Machine boot image&lt;br&gt;- App images" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="50" width="680" height="94" as="geometry"/>
                 </mxCell>
                 <mxCell id="tf" value="&lt;b&gt;Git&lt;/b&gt;&#xa;(Terraform IaC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="230" width="360" height="64" as="geometry"/>
                 </mxCell>
-                <mxCell id="cp" value="&lt;b&gt;Durantic Controlplane&lt;br&gt;&lt;/b&gt;&lt;br&gt;creates resources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
+                <mxCell id="cp" value="&lt;b&gt;Durantic Controlplane&lt;br&gt;&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="386" width="360" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="imgbuild" value="build boot image (manual)&#xa;docker build (FROM linux-ubuntu-25.10)&#xa;-&gt; docker push (private)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;" parent="1" vertex="1">
                     <mxGeometry x="40" y="560" width="360" height="84" as="geometry"/>
                 </mxCell>
-                <mxCell id="zNode" value="k3s-argocd-demo  .  single-node k3s (boots the baked image)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" parent="1" vertex="1">
+                <mxCell id="zNode" value="Single-node k3s cluster" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=center;verticalAlign=top;fontStyle=1;spacingTop=8;" parent="1" vertex="1">
                     <mxGeometry x="580" y="220" width="720" height="570" as="geometry"/>
                 </mxCell>
                 <mxCell id="ci" value="cloud-init (config only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
@@ -55,10 +52,10 @@
                 <mxCell id="mongo" value="&lt;b&gt;MongoDB &lt;/b&gt;(Deployment)&lt;br&gt;static PV -&amp;gt; /mnt/data (data disk) :27017" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
                     <mxGeometry x="1000" y="604" width="260" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="user" value="User / Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                <mxCell id="user" value="User (browser)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="700" y="820" width="180" height="52" as="geometry"/>
                 </mxCell>
-                <mxCell id="e_tf_cp" value="terraform apply" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tf" target="cp" edge="1">
+                <mxCell id="e_tf_cp" value="terraform apply&lt;div&gt;(creates resources)&lt;/div&gt;" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tf" target="cp" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="e_build_reg" value="register image + creds" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="imgbuild" target="cp" edge="1">
@@ -80,7 +77,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="e_bootpull" value="pull boot image (cred)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrBoot" target="ci" edge="1">
+                <mxCell id="e_bootpull" value="pull boot image" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrBoot" target="ci" edge="1">
                     <mxGeometry x="-0.5" relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="e_ci_k3s" value="starts" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ci" target="k3s" edge="1">
@@ -100,7 +97,7 @@
                 <mxCell id="e_argo_app" value="deploys" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.45;entryDx=0;entryDy=0;" parent="1" source="argocd" target="appNs" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e_apppull" value="pull app images (registries.yaml)" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrApp" target="appNs" edge="1">
+                <mxCell id="e_apppull" value="pull app images" style="endArrow=block;html=1;dashed=1;rounded=0;fontSize=11;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ghcrBoot" target="appNs" edge="1">
                     <mxGeometry x="-0.5" relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="e_fe_be" value="/api -&gt; :3000" style="endArrow=block;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="fe" target="be" edge="1">
@@ -128,7 +125,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="manualNote" value="Several steps are manual:&#xa;build + push the boot image; register image + credential (Dashboard); trigger re-provision (Dashboard)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontStyle=2;" parent="1" vertex="1">
+                <mxCell id="manualNote" value="Manual steps:&lt;br&gt;build + push the boot image; register image + credential (Dashboard); trigger re-provision (Dashboard)." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontStyle=2;" parent="1" vertex="1">
                     <mxGeometry x="40" y="680" width="360" height="80" as="geometry"/>
                 </mxCell>
             </root>
