@@ -50,8 +50,7 @@ resource "durantic_mesh_network" "cluster" {
   route_reflector_mode = false
 }
 
-# --- ArgoCD config: uniquely named so it never collides with / reuses the account's
-#     existing ARGOCD_* variables (which point at a different repo). ---
+# --- ArgoCD config ---
 resource "durantic_variable" "argocd_repo_url" {
   name        = "K3S_STANDALONE_ARGOCD_REPO_URL"
   value       = var.argocd_repo_url
@@ -70,7 +69,7 @@ resource "durantic_variable" "argocd_app_path" {
   description = "Path in the repo containing the app-of-apps Applications"
 }
 
-# --- Secrets: uniquely named. ---
+# --- Secrets ---
 resource "durantic_secret" "k3s_cluster_token" {
   name        = "K3S_STANDALONE_ARGOCD_CLUSTER_TOKEN"
   value       = var.k3s_cluster_token

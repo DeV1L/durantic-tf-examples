@@ -6,8 +6,9 @@
 # installs no binaries at runtime.
 #
 # Build + push (public):
-#   tar -czh -C image . | docker build -t ghcr.io/dev1l/durantic-k3s-argocd:latest -
-#   docker push ghcr.io/dev1l/durantic-k3s-argocd:latest
+# cd image
+# docker build -t ghcr.io/dev1l/durantic-k3s-argocd:latest .
+# docker push ghcr.io/dev1l/durantic-k3s-argocd:latest
 FROM ghcr.io/durantic/linux-ubuntu-25.10:latest
 
 ARG K3S_VERSION=v1.34.3+k3s3
@@ -18,7 +19,7 @@ LABEL durantic.image.version="1.0" \
       durantic.image.release="25.10" \
       durantic.image.codename="questing" \
       durantic.image.variant="k3s-argocd" \
-      durantic.image.description="Single-node k3s + ArgoCD (standalone, no gateway)" \
+      durantic.image.description="Single-node k3s + ArgoCD" \
       durantic.architecture="x86_64"
 
 # Bake the k3s binary + systemd unit (offline). SKIP_START/SKIP_ENABLE so the install
