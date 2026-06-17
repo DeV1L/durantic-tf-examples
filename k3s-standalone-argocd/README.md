@@ -105,6 +105,20 @@ ssh root@<node-public-ip> \
   "k3s kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
 ```
 
+### Get the kubeconfig (run kubectl from your machine)
+
+k3s writes a world-readable kubeconfig at `/etc/rancher/k3s/k3s.yaml`. Fetch it and point
+it at the node's public IP (the API cert already includes it, via the agent-discovered
+`tls-san`):
+
+```bash
+ssh root@<node-public-ip> 'cat /etc/rancher/k3s/k3s.yaml' \
+  | sed "s/127.0.0.1/<node-public-ip>/" > kubeconfig
+
+KUBECONFIG=$PWD/kubeconfig kubectl get nodes
+KUBECONFIG=$PWD/kubeconfig kubectl get pods -A
+```
+
 ## Files
 
 | File | Purpose |
