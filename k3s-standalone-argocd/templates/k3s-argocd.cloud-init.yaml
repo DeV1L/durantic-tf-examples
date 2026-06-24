@@ -1,0 +1,61 @@
+#cloud-config
+#
+# Single-node k3s + ArgoCD — standalone, NO gateway.
+#
+# k3s (binary + systemd unit), the ArgoCD HelmChart auto-deploy manifest, and the
+# bootstrap scripts (k3s-public-api.sh, argocd-app-bootstrap.sh) are all BAKED into
+# the boot image (ghcr.io/dev1l/durantic-k3s-argocd; see ../image/). This role only
+# writes config and starts k3s — it installs no binaries at runtime.
+#
+# Required secrets:
+#   K3S_STANDALONE_ARGOCD_CLUSTER_TOKEN   k3s server token
+#   K3S_STANDALONE_ARGOCD_GHCR_TOKEN      ghcr.io PAT (pulls the private app images)
+# Required variables:
+#   K3S_STANDALONE_ARGOCD_REPO_URL        GitOps repo URL
+#   K3S_STANDALONE_ARGOCD_TARGET_REVISION Git branch to track
+#   K3S_STANDALONE_ARGOCD_APP_PATH        path in the repo for the app-of-apps
+
+write_files:
+  - path: /etc/rancher/k3s/config.yaml
+    owner: root:root
+    permissions: '0600'
+    content: |
+      node-ip: "{{ machine.mesh.ip }}"
+      advertise-address: "{{ machine.mesh.ip }}"
+      bind-address: "0.0.0.0"
+      flannel-iface: "durantic-wg"
+      write-kubeconfig-mode: "0644"
+      # local-path PVCs live on the mounted data disk so they survive a re-provision.
+      default-local-storage-path: "/mnt/data/local-path"
+      # The agent already discovers the node's IPs (incl. the public one); the
+      # controlplane renders them here, so no runtime IP-detection script is needed.
+      tls-san:
+        - "{{ machine.mesh.ip }}"
+        - "{{ machine.hostname }}"
+{% for ip in machine.discovered_ip_addresses | default([]) %}
+        - "{{ ip }}"
+{% endfor %}
+      token: "{{ secrets.K3S_STANDALONE_ARGOCD_CLUSTER_TOKEN }}"
+
+  - path: /etc/rancher/k3s/registries.yaml
+    owner: root:root
+    permissions: '0600'
+    content: |
+      configs:
+        "ghcr.io":
+          auth:
+            username: "dev1l"
+            password: "{{ secrets.K3S_STANDALONE_ARGOCD_GHCR_TOKEN }}"
+
+  - path: /etc/durantic/argocd.env
+    owner: root:root
+    permissions: '0600'
+    content: |
+      ARGOCD_REPO_URL="{{ vars.K3S_STANDALONE_ARGOCD_REPO_URL }}"
+      ARGOCD_TARGET_REVISION="{{ vars.K3S_STANDALONE_ARGOCD_TARGET_REVISION }}"
+      ARGOCD_APP_PATH="{{ vars.K3S_STANDALONE_ARGOCD_APP_PATH }}"
+
+runcmd:
+  - /usr/local/bin/mount-data-disk.sh
+  - systemctl enable --now k3s
+  - /usr/local/bin/argocd-app-bootstrap.sh

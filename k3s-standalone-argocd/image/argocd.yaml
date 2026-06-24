@@ -1,0 +1,24 @@
+# Baked into /var/lib/rancher/k3s/server/manifests/ — k3s's helm-controller installs
+# ArgoCD from this on first start (server.insecure so the UI is reachable over the
+# NodePort on plain HTTP).
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: argo-cd
+  namespace: kube-system
+spec:
+  repo: https://argoproj.github.io/argo-helm
+  chart: argo-cd
+  version: "9.5.21"
+  targetNamespace: argocd
+  createNamespace: true
+  valuesContent: |-
+    dex:
+      enabled: false
+    notifications:
+      enabled: false
+    applicationSet:
+      enabled: false
+    configs:
+      params:
+        server.insecure: true
