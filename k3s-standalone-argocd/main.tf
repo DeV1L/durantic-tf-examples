@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     durantic = {
-      source  = "registry.durantic.io/durantic/durantic"
+      source  = "durantic/durantic"
       version = "~> 1.0"
     }
   }
@@ -118,5 +118,5 @@ resource "durantic_machine_deployment" "node" {
   ]
 
   # Bump to force a re-provision without a config change.
-  force_provision = "v5"
+  force_provision = "v1"
 }

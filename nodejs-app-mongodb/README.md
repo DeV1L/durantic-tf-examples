@@ -143,24 +143,9 @@ BACKEND_URL="http://127.0.0.1:3000" PORT=8080 node server.js
 
 ## Prerequisites
 
-Build and install the local provider first:
-
-```bash
-cd /home/ubuntu/git/durantic/terraform-provider-durantic
-make install
-```
-
-Use a Terraform dev override that points at the installed provider binary directory:
-
-```hcl
-provider_installation {
-  dev_overrides {
-    "registry.durantic.io/durantic/durantic" = "/home/ubuntu/go/bin"
-  }
-
-  direct {}
-}
-```
+Terraform >= 1.0. `terraform init` downloads the
+[`durantic/durantic`](https://registry.terraform.io/providers/durantic/durantic/latest)
+provider from the Terraform Registry automatically.
 
 Export credentials:
 

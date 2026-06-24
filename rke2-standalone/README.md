@@ -30,24 +30,9 @@ This example creates the Durantic mesh network, VIP, secret, machine roles, and 
 
 ## Prerequisites
 
-Build and install the local provider first:
-
-```bash
-cd /home/ubuntu/git/durantic/terraform-provider-durantic
-make install
-```
-
-Use a Terraform dev override that points at the installed provider binary directory, for example:
-
-```hcl
-provider_installation {
-  dev_overrides {
-    "registry.durantic.io/durantic/durantic" = "/home/ubuntu/go/bin"
-  }
-
-  direct {}
-}
-```
+Terraform >= 1.0. `terraform init` downloads the
+[`durantic/durantic`](https://registry.terraform.io/providers/durantic/durantic/latest)
+provider from the Terraform Registry automatically.
 
 Export credentials for dev01:
 
@@ -76,6 +61,7 @@ export DURANTIC_API_TOKEN="..."
 
 ```bash
 cd /home/ubuntu/git/durantic/durantic-tf-examples/rke2-standalone
+terraform init
 terraform plan
 terraform apply
 ```

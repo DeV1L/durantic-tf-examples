@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     durantic = {
-      source  = "registry.durantic.io/durantic/durantic"
+      source  = "durantic/durantic"
       version = "~> 1.0"
     }
   }
